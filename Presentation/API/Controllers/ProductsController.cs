@@ -32,11 +32,10 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task Get()
+        public async Task<IActionResult> Get()
         {
-            var order = await _orderReadRepository.GetByIdAsync(Guid.Parse("89d23172-2b88-48b5-89ba-4465179bd1d1"));
-            order.Address = "Borbash";
-            await _orderWriteRepository.SaveAsync();
+            var product = await _productReadRepository.GetByIdAsync(Guid.Parse("ef064cbe-4af2-45d1-80ab-a60cbe45418b"));
+            return Ok(product);
         }
     }
 }
