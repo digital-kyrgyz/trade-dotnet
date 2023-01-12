@@ -35,7 +35,7 @@ namespace Persistence.Repositories
             return entityEntry.State == EntityState.Deleted;
         }
 
-        public async Task<bool> Remove(Guid id)
+        public async Task<bool> RemoveAsync(Guid id)
         {
             T entity = await Table.FirstOrDefaultAsync(e => e.Id == id);
             return Remove(entity);

@@ -15,13 +15,14 @@ namespace Persistence.Contexts
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var entries = ChangeTracker.Entries<BaseEntity>();
-            foreach (var item in entries)
+            var entities = ChangeTracker.Entries<BaseEntity>();
+            foreach (var item in entities)
             {
                 _ = item.State switch
                 {
                     EntityState.Added => item.Entity.CreatedDate = DateTime.UtcNow,
                     EntityState.Modified => item.Entity.ModifiedDate = DateTime.UtcNow,
+                    _ => DateTime.UtcNow,
                 };
             }
             return await base.SaveChangesAsync(cancellationToken);
