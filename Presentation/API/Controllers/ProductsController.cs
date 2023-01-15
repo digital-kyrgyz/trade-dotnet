@@ -1,4 +1,5 @@
 ﻿using Application.Repositories;
+using Application.RequestParameters;
 using Application.ViewModels.Products;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -22,16 +23,27 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] Pagination pagination)
         {
-            var product = _productReadRepository.GetAll(false);
-            return Ok(product);
+            var totalCount = _productReadRepository.GetAll(tracking: false).Count();
+            var products = _productReadRepository.GetAll(tracking: false)
+                .Skip(pagination.Page * pagination.Size).Take(pagination.Size).Select(p => new
+                {
+                    p.Id,
+                    p.Name,
+                    p.Stock,
+                    p.Price,
+                    p.CreatedDate,
+                    p.ModifiedDate
+                }).ToList();
+
+            return Ok(new { totalCount, products });
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            return Ok(await _productReadRepository.GetByIdAsync(id, false));
+            return Ok(await _productReadRepository.GetByIdAsync(id, tracking: false));
         }
 
         [HttpPost]
